@@ -14,7 +14,7 @@ import (
 //Db struct is used to configure and init pg db instance
 type Db struct {
 	Host, DbName, Port, User, password string
-	D                                  *pgx.Conn
+	Instance                           *pgx.Conn
 }
 
 // Setup connects to database server and checks connection
@@ -25,7 +25,7 @@ func (db *Db) Setup(ctx context.Context) (*pgx.Conn, error) {
 	fmt.Println(" > Connecting to database...")
 
 	var err error
-	db.D, err = pgx.Connect(ctx, fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s",
+	db.Instance, err = pgx.Connect(ctx, fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s",
 		db.Host, db.Port, db.User, db.password, db.DbName))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to connect to database: %v\n", err)
@@ -40,15 +40,15 @@ func (db *Db) Setup(ctx context.Context) (*pgx.Conn, error) {
 	}
 	//defer db.D.Close(context.Background())
 
-	return db.D, nil
+	return db.Instance, nil
 }
 
 //Ping prints the message passed, used for checking database connection
 //TODO add errors as return value
 func (db *Db) Ping(msg string) error {
 	var showMessage string
-	if db.D != nil {
-		err := db.D.QueryRow(context.Background(), "select '"+msg+"'").Scan(&showMessage)
+	if db.Instance != nil {
+		err := db.Instance.QueryRow(context.Background(), "select '"+msg+"'").Scan(&showMessage)
 		if err != nil {
 			return err
 		}
