@@ -18,14 +18,14 @@ type Db struct {
 }
 
 // Setup connects to database server and checks connection
-func (db *Db) Setup() (*pgx.Conn, error) {
+func (db *Db) Setup(ctx context.Context) (*pgx.Conn, error) {
 
 	//cfg.SetConfig(host, port, user, password, dbname)
 
 	fmt.Println(" > Connecting to database...")
 
 	var err error
-	db.D, err = pgx.Connect(context.Background(), fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s",
+	db.D, err = pgx.Connect(ctx, fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s",
 		db.Host, db.Port, db.User, db.password, db.DbName))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to connect to database: %v\n", err)
@@ -38,7 +38,7 @@ func (db *Db) Setup() (*pgx.Conn, error) {
 		return nil, err
 		//os.Exit(1) //TODO: handle error gracefully or pass to the calling program
 	}
-	defer db.D.Close(context.Background())
+	//defer db.D.Close(context.Background())
 
 	return db.D, nil
 }
