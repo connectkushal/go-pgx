@@ -18,7 +18,7 @@ type Db struct {
 }
 
 // Setup connects to database server and checks connection
-func (db *Db) Setup(host, port, user, password, dbname string) (*pgx.Conn, error) {
+func (db *Db) Setup() (*pgx.Conn, error) {
 
 	//cfg.SetConfig(host, port, user, password, dbname)
 
