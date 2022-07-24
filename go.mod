@@ -1,4 +1,4 @@
-module github.com/connectkushal/go-pgx/v1
+module github.com/connectkushal/go-pgx
 
 go 1.18
 
