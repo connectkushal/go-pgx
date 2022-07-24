@@ -53,11 +53,11 @@ func (db *Db) Ping(msg string) error {
 	return nil
 }
 
-// To enable setting password via env var, api or any other way
-type passwordSetter func() (string, error)
+// PasswordSetter type along with func SetPassword enables setting password via env var, api or any other way.
+type PasswordSetter func() (string, error)
 
 // SetPassword sets the db password through passing a function which returns a string and an error
-func (db *Db) SetPassword(f passwordSetter) error {
+func (db *Db) SetPassword(f PasswordSetter) error {
 	pwd, err := f()
 	if err != nil {
 		return err
