@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/jackc/pgx/v4"
+	pgx "github.com/jackc/pgx/v5"
 )
 
 //Db struct is used to configuure database and store a Connection instance
@@ -16,27 +16,26 @@ type Db struct {
 }
 
 // Setup connects to the postgres database server and verifies the connection using Ping
-func (db *Db) Setup(ctx context.Context) (*pgx.Conn, error) {
+func (db *Db) Setup(ctx context.Context) error {
 
 	fmt.Println(" > Connecting to database...")
 
 	var err error
 	db.Instance, err = pgx.Connect(ctx, fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s",
 		db.Host, db.Port, db.User, db.password, db.DbName))
+
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to connect to database: %v\n", err)
-		return nil, err
-		//os.Exit(1)
+		return err
 	}
-	err = db.Ping("Database connected...")
+
+	err = db.Ping("Connected to db " + db.DbName + "@" + db.Host + ":" + db.Port)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Ping: Failed to run QueryRow for Ping(): %v\n", err)
-		return nil, err
-		//os.Exit(1)
+		return err
 	}
-	//defer db.D.Close(context.Background())
 
-	return db.Instance, nil
+	return nil
 }
 
 //Ping prints the message passed, can be used for checking the database connection
